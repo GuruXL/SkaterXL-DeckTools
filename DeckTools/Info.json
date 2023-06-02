@@ -1,0 +1,11 @@
+{
+    "Id": "DeckTools",
+    "DisplayName": "DeckTools",
+    "Author": "Guru",
+    "Version": "0.0.2",
+    "ManagerVersion": "0.22.5.0",
+    "Requirements": [],
+    "LoadAfter": [],
+    "AssemblyName": "DeckTools.dll",
+    "EntryMethod": "DeckTools.Main.Load"
+}
