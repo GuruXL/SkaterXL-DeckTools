@@ -41,6 +41,20 @@ namespace DeckTools
         public Color BGColor = new Color(0.0f, 0.0f, 0.0f);
         public bool enabled = false;
 
+        public string WheelScaleTarget = "Select Wheel";
+
+        public string[] WheelList = new string[]
+        {
+            "Wheel 1",
+            "Wheel 2",
+            "Wheel 3",
+            "Wheel 4"
+        };
+
+        public Vector3 DefaultDeckCollider1Size = new Vector3(1.2f, 1.5f, 0f);
+        public Vector3 DefaultDeckCollider2Size = new Vector3(1.2f, 1.5f, 0f);
+        public Vector3 DefaultDeckCollider3Size = new Vector3(1f, 1f, 1f);
+
         public float DeckLocalScale_x = 1f;
         public float DeckLocalScale_y = 1f;
         public float DeckLocalScale_z = 1f;
@@ -54,6 +68,7 @@ namespace DeckTools
         public float Wheel3Radius = 1f;
         public float Wheel4LocalScale_x = 1f;
         public float Wheel4Radius = 1f;
+        public float truckTightness = 1f;
 
         // Deck Settings
         public float frontTruckAttatchPoint = 0.21f;
@@ -81,11 +96,10 @@ namespace DeckTools
         public float BT_width = 1.8f;
         public float BT_depth = 0.07f;
 
-        public float truckTightness = 1f;
-        public float truckSpring = 10f;
-        public float truckDamping = 2f;
-
-        public float WheelRadius = 0.0275f;
+        public void resetWheelTarget()
+        {
+            WheelScaleTarget = "Select Wheel";
+        }
 
         public void OnChange()
         {

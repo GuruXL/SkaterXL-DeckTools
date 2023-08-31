@@ -34,5 +34,7 @@ namespace DeckTools
         public float Wheel4LocalScale_x;
         [SerializeField]
         public float Wheel4Radius;
+        [SerializeField]
+        public float truckTightness;
     }
 }

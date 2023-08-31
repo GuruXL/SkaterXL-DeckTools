@@ -14,13 +14,21 @@ namespace DeckTools
 {
     public class DeckTools : MonoBehaviour
     {
-        
+
         Transform DeckParent;
+
+        public BoxCollider Deck_Collider1;
+        public BoxCollider Deck_Collider2;
+        public BoxCollider Deck_Collider3;
+
         Transform BackTruckHanger;
         Transform FrontTruckHanger;
 
-        //CapsuleCollider BackTruckCollider;
-        //CapsuleCollider FrontTruckCollider;
+        CapsuleCollider BackTruckCollider;
+        CapsuleCollider FrontTruckCollider;
+
+        private float DefaultTruckColliderHeight = 0.16f;
+        //private float DefaultWheelColliderRadius = 0.0265f;
 
         Transform Wheel1;
         Transform Wheel2;
@@ -43,6 +51,7 @@ namespace DeckTools
         Transform Replay_Wheel3;
         Transform Replay_Wheel4;
 
+        /*
         Transform Multi_DeckParent;
         Transform Multi_BackTruckHanger;
         Transform Multi_FrontTruckHanger;
@@ -50,6 +59,7 @@ namespace DeckTools
         Transform Multi_Wheel2;
         Transform Multi_Wheel3;
         Transform Multi_Wheel4;
+        */
 
         private void Start()
         {
@@ -63,6 +73,7 @@ namespace DeckTools
             {
                 return;
             }
+            /*
             else if(MultiplayerManager.Instance.InRoom)
             {
                 if (MultiDeckFound() == true)
@@ -70,16 +81,19 @@ namespace DeckTools
                     UpdateMultiSettings();
                 }
             }
+            */
             else
             {
                 switch (GameStateMachine.Instance.CurrentState)
                 {
                     case PlayState playState:
                         UpdateSettings();
-                        UpdateWheelCollider();
                         UpdateWheelPos();
-
+                        UpdateDeckColliders();
+                        UpdateTruckCollider();
+                        UpdateWheelCollider();
                         break;
+
                     case ReplayState replayState:
                         UpdateReplaySettings();
                         UpdateReplayWheelPos();
@@ -87,8 +101,11 @@ namespace DeckTools
                 }
             }
         }
+
+        /*
         private void FixedUpdate()
         {
+            
             if (MultiplayerManager.Instance.InRoom)
             {
                 if (MultiDeckFound() == false)
@@ -103,8 +120,11 @@ namespace DeckTools
                     ResetMultiDeck();
                 }
             }
+            
         }
+        */
 
+        // ------------------------ Get Components ------------------------
         private void GetDeck()
         {
             // GameStateMachine.Instance.MainPlayer.gameplay.playerData.board
@@ -131,14 +151,25 @@ namespace DeckTools
                 .Find("Wheel4 Collider")
                 .GetComponent<SphereCollider>();
 
+            // Defualt Positions
             DefaultWheelPos[0] = Wheel1.localPosition;
             DefaultWheelPos[1] = Wheel2.localPosition;
             DefaultWheelPos[2] = Wheel3.localPosition;
             DefaultWheelPos[3] = Wheel4.localPosition;
 
             // Truck Colliders
-            //BackTruckCollider = GameStateMachine.Instance.MainPlayer.characterCustomizer.TruckHangerParents[0].parent.GetComponent<CapsuleCollider>();
-            //FrontTruckCollider = GameStateMachine.Instance.MainPlayer.characterCustomizer.TruckHangerParents[1].parent.GetComponent<CapsuleCollider>();
+            BackTruckCollider = GameStateMachine.Instance.MainPlayer.characterCustomizer.TruckHangerParents[0].parent.GetComponent<CapsuleCollider>();
+            FrontTruckCollider = GameStateMachine.Instance.MainPlayer.characterCustomizer.TruckHangerParents[1].parent.GetComponent<CapsuleCollider>();
+
+            // deck Colliders
+            Transform deck = GameStateMachine.Instance.MainPlayer.gameplay.transformReference.boardTransform.Find("Deck");
+            Transform colliders = deck.Find("Colliders");
+            Deck_Collider1 = colliders.Find("Cube (1)") // tail
+                .GetComponent<BoxCollider>();
+            Deck_Collider2 = colliders.Find("Cube (2)") // nose
+                .GetComponent<BoxCollider>();
+            Deck_Collider3 = colliders.Find("Cube (5)") // deck
+                .GetComponent<BoxCollider>();
         }
 
         private void GetReplayDeck()
@@ -157,6 +188,7 @@ namespace DeckTools
             Default_Replay_WheelPos[3] = Replay_Wheel4.localPosition;
         }
 
+        /*
         private void GetMultiDeck()
         {
             foreach (KeyValuePair<int, NetworkPlayerController> player in MultiplayerManager.Instance.networkPlayers)
@@ -165,15 +197,15 @@ namespace DeckTools
                 {
                     if (player.Value.IsLocal)
                     {
-                        /*
-                        Multi_DeckParent = player.Value.transformSyncer.livePlayback.customizer.DeckParent;
-                        Multi_BackTruckHanger = player.Value.transformSyncer.livePlayback.customizer.TruckHangerParents[0].parent;
-                        Multi_FrontTruckHanger = player.Value.transformSyncer.livePlayback.customizer.TruckHangerParents[1].parent;
-                        Multi_Wheel1 = player.Value.transformSyncer.livePlayback.customizer.WheelParents[0];
-                        Multi_Wheel2 = player.Value.transformSyncer.livePlayback.customizer.WheelParents[1];
-                        Multi_Wheel3 = player.Value.transformSyncer.livePlayback.customizer.WheelParents[2];
-                        Multi_Wheel4 = player.Value.transformSyncer.livePlayback.customizer.WheelParents[3];
-                        */
+                        
+                        //Multi_DeckParent = player.Value.transformSyncer.livePlayback.customizer.DeckParent;
+                        //Multi_BackTruckHanger = player.Value.transformSyncer.livePlayback.customizer.TruckHangerParents[0].parent;
+                        //Multi_FrontTruckHanger = player.Value.transformSyncer.livePlayback.customizer.TruckHangerParents[1].parent;
+                        //Multi_Wheel1 = player.Value.transformSyncer.livePlayback.customizer.WheelParents[0];
+                        //Multi_Wheel2 = player.Value.transformSyncer.livePlayback.customizer.WheelParents[1];
+                        //Multi_Wheel3 = player.Value.transformSyncer.livePlayback.customizer.WheelParents[2];
+                        //Multi_Wheel4 = player.Value.transformSyncer.livePlayback.customizer.WheelParents[3];
+                        
                         //Multi_DeckParent = player.Value.transformSyncer.transformReference.boardTransform;
                         
                         Multi_DeckParent = player.Value.GetSkateboard().FindChildRecursively("Deck Mesh Parent");
@@ -188,7 +220,9 @@ namespace DeckTools
                 }
             }
         }
+        */
 
+        /*
         private bool MultiDeckFound()
         {
             if (Multi_DeckParent != null && Multi_BackTruckHanger && Multi_FrontTruckHanger != null && Multi_Wheel1 != null && Multi_Wheel2 != null && Multi_Wheel3 != null && Multi_Wheel4 != null)
@@ -200,7 +234,9 @@ namespace DeckTools
                 return false;
             }
         }
+        */
 
+        /*
         private void ResetMultiDeck()
         {
             Multi_DeckParent = null;
@@ -211,6 +247,10 @@ namespace DeckTools
             Multi_Wheel3 = null;
             Multi_Wheel4 = null;
         }
+        */
+        // ------------------------ Get Components End ------------------------
+
+        // ------------------------ Update Settings ------------------------
         private void UpdateSettings()
         {
             // Scales Deck mesh
@@ -229,7 +269,7 @@ namespace DeckTools
             {
                 Vector3 backTruckLocalScale = BackTruckHanger.localScale;
                 Vector3 settingsBackTruckLocalScale = new Vector3(Main.settings.BackTruckLocalScale_x, backTruckLocalScale.y, backTruckLocalScale.z);
-                if (backTruckLocalScale.x != Main.settings.BackTruckLocalScale_x)
+                if (backTruckLocalScale != settingsBackTruckLocalScale)
                 {
                     BackTruckHanger.localScale = settingsBackTruckLocalScale;
                 }
@@ -238,7 +278,7 @@ namespace DeckTools
             {
                 Vector3 frontTruckLocalScale = FrontTruckHanger.localScale;
                 Vector3 settingsFrontTruckLocalScale = new Vector3(Main.settings.FrontTruckLocalScale_x, frontTruckLocalScale.y, frontTruckLocalScale.z);
-                if (frontTruckLocalScale.x != Main.settings.FrontTruckLocalScale_x)
+                if (frontTruckLocalScale != settingsFrontTruckLocalScale)
                 {
                     FrontTruckHanger.localScale = settingsFrontTruckLocalScale;
                 }
@@ -305,6 +345,117 @@ namespace DeckTools
                 }
             }
         }
+        public void ScaleAllWheels()
+        {
+            switch (Main.settings.WheelScaleTarget)
+            {
+                case "Wheel 1":
+                    var blScale = Main.settings.Wheel1LocalScale_x;
+                    var blRadius = Main.settings.Wheel1Radius;
+                    Main.settings.Wheel2LocalScale_x = blScale;
+                    Main.settings.Wheel2Radius = blRadius;
+                    Main.settings.Wheel3LocalScale_x = blScale;
+                    Main.settings.Wheel3Radius = blRadius;
+                    Main.settings.Wheel4LocalScale_x = blScale;
+                    Main.settings.Wheel4Radius = blRadius;
+                    break;
+                case "Wheel 2":
+                    var brScale = Main.settings.Wheel2LocalScale_x;
+                    var brRadius = Main.settings.Wheel2Radius;
+                    Main.settings.Wheel1LocalScale_x = brScale;
+                    Main.settings.Wheel1Radius = brRadius;
+                    Main.settings.Wheel3LocalScale_x = brScale;
+                    Main.settings.Wheel3Radius = brRadius;
+                    Main.settings.Wheel4LocalScale_x = brScale;
+                    Main.settings.Wheel4Radius = brRadius;
+                    break;
+                case "Wheel 3":
+                    var flScale = Main.settings.Wheel3LocalScale_x;
+                    var flRadius = Main.settings.Wheel3Radius;
+                    Main.settings.Wheel1LocalScale_x = flScale;
+                    Main.settings.Wheel1Radius = flRadius;
+                    Main.settings.Wheel2LocalScale_x = flScale;
+                    Main.settings.Wheel2Radius = flRadius;
+                    Main.settings.Wheel4LocalScale_x = flScale;
+                    Main.settings.Wheel4Radius = flRadius;
+                    break;
+                case "Wheel 4":
+                    var frScale = Main.settings.Wheel4LocalScale_x;
+                    var frRadius = Main.settings.Wheel4Radius;
+                    Main.settings.Wheel1LocalScale_x = frScale;
+                    Main.settings.Wheel1Radius = frRadius;
+                    Main.settings.Wheel2LocalScale_x = frScale;
+                    Main.settings.Wheel2Radius = frRadius;
+                    Main.settings.Wheel3LocalScale_x = frScale;
+                    Main.settings.Wheel3Radius = frRadius;
+                    break;
+            }
+        }
+        // ------------------------ Update Settings End ------------------------
+
+        // ------------------------ Scale Colliders ------------------------
+        void UpdateDeckColliders()
+        {
+            if (Deck_Collider1 != null)
+            {
+                float X = Main.settings.DefaultDeckCollider1Size.x * Main.settings.DeckLocalScale_x;
+                float Y = (Main.settings.DefaultDeckCollider1Size.y * (2 - Main.settings.DeckLocalScale_y) + 6 * (Main.settings.DeckLocalScale_y - 1)) / (2 - 1);
+                float Z = Deck_Collider1.size.z;
+                Vector3 newSize = new Vector3(X, Y, Z);
+                if (Deck_Collider1.size != newSize)
+                {
+                    Deck_Collider1.size = newSize;
+                }
+            }
+
+            if (Deck_Collider2 != null)
+            {
+                float X = Main.settings.DefaultDeckCollider2Size.x * Main.settings.DeckLocalScale_x;
+                float Y = (Main.settings.DefaultDeckCollider2Size.y * (2 - Main.settings.DeckLocalScale_y) + 6 * (Main.settings.DeckLocalScale_y - 1)) / (2 - 1);
+                float Z = Deck_Collider2.size.z;
+                Vector3 newSize = new Vector3(X, Y, Z);
+                if (Deck_Collider2.size != newSize)
+                {
+                    Deck_Collider2.size = newSize;
+                }
+            }
+
+            if (Deck_Collider3 != null)
+            {
+                float X = Main.settings.DefaultDeckCollider3Size.x * Main.settings.DeckLocalScale_x;
+                float Y = Main.settings.DefaultDeckCollider3Size.y * Main.settings.DeckLocalScale_y;
+                float Z = Deck_Collider3.size.z;
+                Vector3 newSize = new Vector3(X, Y, Z);
+                if (Deck_Collider3.size != newSize)
+                {
+                    Deck_Collider3.size = newSize;
+                }
+            }
+        }
+
+        private float oldBTColliderHeight, oldFTColliderHeight;
+        private void UpdateTruckCollider()
+        {
+            if (BackTruckCollider != null)
+            {
+                var backTruckLocalScaleX = Main.settings.BackTruckLocalScale_x;
+                if (oldBTColliderHeight != backTruckLocalScaleX)
+                {
+                    BackTruckCollider.height = DefaultTruckColliderHeight * backTruckLocalScaleX;
+                    oldBTColliderHeight = backTruckLocalScaleX;
+                }
+            }
+
+            if (FrontTruckCollider != null)
+            {
+                var frontTruckLocalScaleX = Main.settings.FrontTruckLocalScale_x;
+                if (oldFTColliderHeight != frontTruckLocalScaleX)
+                {
+                    FrontTruckCollider.height = DefaultTruckColliderHeight * frontTruckLocalScaleX;
+                    oldFTColliderHeight = frontTruckLocalScaleX;
+                }
+            }
+        }
 
         private float oldW1Radius, oldW2Radius, oldW3Radius, oldW4Radius;
         private void UpdateWheelCollider()
@@ -343,6 +494,9 @@ namespace DeckTools
             }
         }
 
+        // ------------------------ Scale Colliders End ------------------------
+
+        // ------------------------ Update Positions ------------------------
         private void UpdateWheelPos()
         {
             const float num = 12f;
@@ -351,19 +505,45 @@ namespace DeckTools
             var newWheel3Pos = new Vector3(Main.settings.FrontTruckLocalScale_x / -num, DefaultWheelPos[2].y, DefaultWheelPos[2].z);
             var newWheel4Pos = new Vector3(Main.settings.FrontTruckLocalScale_x / num, DefaultWheelPos[3].y, DefaultWheelPos[3].z);
 
-            Wheel1.localPosition = newWheel1Pos;
-            Wheel2.localPosition = newWheel2Pos;
-            Wheel3.localPosition = newWheel3Pos;
-            Wheel4.localPosition = newWheel4Pos;
+            if (Wheel1.localPosition != newWheel1Pos)
+            {
+                Wheel1.localPosition = newWheel1Pos;
+            }
+            if (Wheel2.localPosition != newWheel2Pos)
+            {
+                Wheel2.localPosition = newWheel2Pos;
+            }
+            if (Wheel3.localPosition != newWheel3Pos)
+            {
+                Wheel3.localPosition = newWheel3Pos;
+            }
+            if (Wheel4.localPosition != newWheel4Pos)
+            {
+                Wheel4.localPosition = newWheel4Pos;
+            }
 
             // Colliders position
-            Wheel1Collider.transform.localPosition = newWheel1Pos;
-            Wheel2Collider.transform.localPosition = newWheel2Pos;
-            Wheel3Collider.transform.localPosition = newWheel3Pos;
-            Wheel4Collider.transform.localPosition = newWheel4Pos;
-
-
+            if (Wheel1Collider.transform.localPosition != newWheel1Pos)
+            {
+                Wheel1Collider.transform.localPosition = newWheel1Pos;
+            }
+            if (Wheel2Collider.transform.localPosition != newWheel2Pos)
+            {
+                Wheel2Collider.transform.localPosition = newWheel2Pos;
+            }
+            if (Wheel3Collider.transform.localPosition != newWheel3Pos)
+            {
+                Wheel3Collider.transform.localPosition = newWheel3Pos;
+            }
+            if (Wheel4Collider.transform.localPosition != newWheel4Pos)
+            {
+                Wheel4Collider.transform.localPosition = newWheel4Pos;
+            }
         }
+
+        // ------------------------ Update Positions End ------------------------
+
+        // ------------------------ Replay Settings ------------------------
         private void UpdateReplaySettings()
         {
             // Scales Replay Deck mesh
@@ -467,12 +647,26 @@ namespace DeckTools
             var newWheel3Pos = new Vector3(Main.settings.FrontTruckLocalScale_x / -num, DefaultWheelPos[2].y, DefaultWheelPos[2].z);
             var newWheel4Pos = new Vector3(Main.settings.FrontTruckLocalScale_x / num, DefaultWheelPos[3].y, DefaultWheelPos[3].z);
 
-            Replay_Wheel1.localPosition = newWheel1Pos;
-            Replay_Wheel2.localPosition = newWheel2Pos;
-            Replay_Wheel3.localPosition = newWheel3Pos;
-            Replay_Wheel4.localPosition = newWheel4Pos;
+            if (Replay_Wheel1.localPosition != newWheel1Pos)
+            {
+                Replay_Wheel1.localPosition = newWheel1Pos;
+            }
+            if (Replay_Wheel2.localPosition != newWheel2Pos)
+            {
+                Replay_Wheel2.localPosition = newWheel2Pos;
+            }
+            if (Replay_Wheel3.localPosition != newWheel3Pos)
+            {
+                Replay_Wheel3.localPosition = newWheel3Pos;
+            }
+            if (Replay_Wheel4.localPosition != newWheel4Pos)
+            {
+                Replay_Wheel4.localPosition = newWheel4Pos;
+            }
         }
-       
+        // ------------------------ Replay Settings End ------------------------
+
+        /*
         private void UpdateMultiSettings()
         {
 
@@ -568,5 +762,6 @@ namespace DeckTools
                 }
             }
         }
+        */
     }
 }

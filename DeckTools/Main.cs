@@ -24,22 +24,14 @@ namespace DeckTools
         public static bool Load(UnityModManager.ModEntry modEntry)
         {
             settings = UnityModManager.ModSettings.Load<Settings>(modEntry);
-            modEntry.OnGUI = OnGUI;
-            modEntry.OnSaveGUI = new System.Action<UnityModManager.ModEntry>(OnSaveGUI);
+            //modEntry.OnGUI = OnGUI;
+            //modEntry.OnSaveGUI = new System.Action<UnityModManager.ModEntry>(OnSaveGUI);
             modEntry.OnToggle = new System.Func<UnityModManager.ModEntry, bool, bool>(OnToggle);
             modEntry.OnUnload = new System.Func<UnityModManager.ModEntry, bool>(Unload);
             Main.modEntry = modEntry;
             Logger.Log(nameof(Load));
 
             return true;
-        }
-        private static void OnGUI(UnityModManager.ModEntry modEntry)
-        {
-
-        }
-        private static void OnSaveGUI(UnityModManager.ModEntry modEntry)
-        {
-            settings.Save(modEntry);
         }
         private static bool OnToggle(UnityModManager.ModEntry modEntry, bool value)
         {
@@ -61,17 +53,16 @@ namespace DeckTools
 
                     deckTools = ScriptManager.AddComponent<DeckTools>();
                     ui = ScriptManager.AddComponent<UI>();
+
                     presetSettings = PresetManager.AddComponent<PresetSettings>();
                     PresetCtrl = PresetManager.AddComponent<PresetController>();
 
                     Object.DontDestroyOnLoad(ScriptManager);
-                    //Object.DontDestroyOnLoad(PresetManager);
                 }
                 else
                 {
                     harmonyInstance.UnpatchAll(harmonyInstance.Id);
                     Object.Destroy(ScriptManager);
-                    //Object.Destroy(PresetManager);
                 }
                 flag = true;
             }

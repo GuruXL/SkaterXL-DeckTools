@@ -55,7 +55,7 @@ namespace DeckTools
 
         public void SavePreset()
         {
-            
+
             savePreset.DeckLocalScale_x = Main.settings.DeckLocalScale_x;
             savePreset.DeckLocalScale_y = Main.settings.DeckLocalScale_y;
             savePreset.DeckLocalScale_z = Main.settings.DeckLocalScale_z;
@@ -69,6 +69,7 @@ namespace DeckTools
             savePreset.Wheel3Radius = Main.settings.Wheel3Radius;
             savePreset.Wheel4LocalScale_x = Main.settings.Wheel4LocalScale_x;
             savePreset.Wheel4Radius = Main.settings.Wheel4Radius;
+            savePreset.truckTightness = Main.settings.truckTightness;
 
             string json = JsonUtility.ToJson(savePreset);
             File.WriteAllText(mainPath + "DeckPresets\\" + $"{PresetName}.json", json);
@@ -101,7 +102,7 @@ namespace DeckTools
         {
             if (PresetToLoad != "Select Preset to Load")
             {
-               
+
                 Main.settings.DeckLocalScale_x = loadedPreset.DeckLocalScale_x;
                 Main.settings.DeckLocalScale_y = loadedPreset.DeckLocalScale_y;
                 Main.settings.DeckLocalScale_z = loadedPreset.DeckLocalScale_z;
@@ -115,6 +116,7 @@ namespace DeckTools
                 Main.settings.Wheel3Radius = loadedPreset.Wheel3Radius;
                 Main.settings.Wheel4LocalScale_x = loadedPreset.Wheel4LocalScale_x;
                 Main.settings.Wheel4Radius = loadedPreset.Wheel4Radius;
+                Main.settings.truckTightness = loadedPreset.truckTightness;
 
                 MessageSystem.QueueMessage(MessageDisplayData.Type.Success, $"{PresetToLoad} Preset Applied", 2.5f);
             }
