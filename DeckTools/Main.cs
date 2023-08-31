@@ -2,6 +2,8 @@
 using System.Reflection;
 using UnityEngine;
 using UnityModManagerNet;
+using ModIO.UI;
+using RapidGUI;
 
 namespace DeckTools
 {
@@ -18,20 +20,51 @@ namespace DeckTools
         public static DeckTools deckTools;
         public static UI ui;
 
-        public static PresetSettings presetSettings;
+        private static PresetSettings presetSettings;
         public static PresetController PresetCtrl;
 
         public static bool Load(UnityModManager.ModEntry modEntry)
         {
             settings = UnityModManager.ModSettings.Load<Settings>(modEntry);
-            //modEntry.OnGUI = OnGUI;
-            //modEntry.OnSaveGUI = new System.Action<UnityModManager.ModEntry>(OnSaveGUI);
+            modEntry.OnGUI = OnGUI;
+            modEntry.OnSaveGUI = new System.Action<UnityModManager.ModEntry>(OnSaveGUI);
             modEntry.OnToggle = new System.Func<UnityModManager.ModEntry, bool, bool>(OnToggle);
             modEntry.OnUnload = new System.Func<UnityModManager.ModEntry, bool>(Unload);
             Main.modEntry = modEntry;
             Logger.Log(nameof(Load));
 
             return true;
+        }
+        private static void OnGUI(UnityModManager.ModEntry modEntry)
+        {
+            GUILayout.BeginVertical(GUILayout.Width(256));
+            if (RGUI.Button(settings.HotKeyToggle, "Change HotKey"))
+            {
+                settings.HotKeyToggle = !settings.HotKeyToggle;
+            }
+
+            if (settings.HotKeyToggle)
+            {
+                GUILayout.Label("<b>Press any Key to change HotKey</b>");
+                GUILayout.Box("<b>Current HotKey: Ctrl + </b>" + settings.Hotkey.keyCode.ToString(""), GUILayout.Height(25f));
+                if (Settings.GetCurrentKeyDown() != null)
+                {
+                    settings.Hotkey = new KeyBinding { keyCode = (KeyCode)Settings.GetCurrentKeyDown() };
+                    MessageSystem.QueueMessage(MessageDisplayData.Type.Success, $"Deck Tools HotKey Changed to: Ctrl + " + settings.Hotkey.keyCode.ToString(""), 2.5f);
+                }
+            }
+            GUILayout.EndVertical();
+            GUILayout.BeginVertical(GUILayout.Width(256));
+            GUILayout.Box("<b>Background Colour</b>", GUILayout.Height(21f));
+            settings.BGColor.r = RGUI.SliderFloat(settings.BGColor.r, 0.0f, 1.0f, 0.0f, "Red");
+            settings.BGColor.g = RGUI.SliderFloat(settings.BGColor.g, 0.0f, 1.0f, 0.0f, "Green");
+            settings.BGColor.b = RGUI.SliderFloat(settings.BGColor.b, 0.0f, 1.0f, 0.0f, "Blue");
+            GUILayout.EndVertical();
+
+        }
+        private static void OnSaveGUI(UnityModManager.ModEntry modEntry)
+        {
+            settings.Save(modEntry);
         }
         private static bool OnToggle(UnityModManager.ModEntry modEntry, bool value)
         {

@@ -13,9 +13,7 @@ namespace DeckTools
         private static void Postfix()
         {
             if (!Main.enabled || GameStateMachine.Instance.CurrentState.GetType() != typeof(PlayState) ||
-                GameStateMachine.Instance.MainPlayer.gameplay.playerData.currentState == PlayerStateEnum.Manual ||
-                GameStateMachine.Instance.MainPlayer.gameplay.playerData.currentState == PlayerStateEnum.Impact ||
-                GameStateMachine.Instance.MainPlayer.gameplay.playerData.currentState == PlayerStateEnum.InAir)
+                GameStateMachine.Instance.MainPlayer.gameplay.playerData.currentState == PlayerStateEnum.Manual)
                 return;
             JointDrive jointDrive = new JointDrive();
             //float defaultSpring = 1f;

@@ -40,6 +40,10 @@ namespace DeckTools
 
         public Color BGColor = new Color(0.0f, 0.0f, 0.0f);
         public bool enabled = false;
+        public bool HotKeyToggle = false;
+        public bool DeckColliderToggle = true;
+        public bool TruckColliderToggle = true;
+        public bool WheelColliderToggle = true;
 
         public string WheelScaleTarget = "Select Wheel";
 
@@ -50,10 +54,6 @@ namespace DeckTools
             "Wheel 3",
             "Wheel 4"
         };
-
-        public Vector3 DefaultDeckCollider1Size = new Vector3(1.2f, 1.5f, 0f);
-        public Vector3 DefaultDeckCollider2Size = new Vector3(1.2f, 1.5f, 0f);
-        public Vector3 DefaultDeckCollider3Size = new Vector3(1f, 1f, 1f);
 
         public float DeckLocalScale_x = 1f;
         public float DeckLocalScale_y = 1f;
