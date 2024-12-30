@@ -1,2 +1,2 @@
-# SkaterXL-DeckTools for SkaterXL v1.2.6.0
+# SkaterXL-DeckTools for SkaterXL public version
 Skateboard scaling and resizing tool
