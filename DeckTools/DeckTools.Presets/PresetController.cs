@@ -5,7 +5,7 @@ using UnityEngine;
 using System.IO;
 using ModIO.UI;
 
-namespace DeckTools
+namespace DeckTools.Presets
 {
     public class PresetController : MonoBehaviour
     {

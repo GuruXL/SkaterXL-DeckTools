@@ -139,10 +139,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Patches\TruckTightnessPatch.cs" />
-    <Compile Include="DeckTools.cs" />
-    <Compile Include="Presets\PresetSettings.cs" />
-    <Compile Include="Presets\PresetController.cs" />
+    <Compile Include="DeckTools.Patches\TruckTightnessPatch.cs" />
+    <Compile Include="DeckTools\DeckTools.cs" />
+    <Compile Include="DeckTools.Presets\PresetSettings.cs" />
+    <Compile Include="DeckTools.Presets\PresetController.cs" />
     <Compile Include="RapidGUI\Button.cs" />
     <Compile Include="RapidGUI\Field.cs" />
     <Compile Include="RapidGUI\Field\BoolField.cs" />
@@ -166,15 +166,19 @@
     <Compile Include="RapidGUI\Utilities\UnparsedStr.cs" />
     <Compile Include="RapidGUI\Utilities\WarningLabelNoStyle.cs" />
     <Compile Include="RapidGUI\Utilities\WindowInvoker.cs" />
-    <Compile Include="UI.cs" />
-    <Compile Include="Settings.cs" />
-    <Compile Include="Main.cs" />
+    <Compile Include="DeckTools.UI\UIController.cs" />
+    <Compile Include="DeckTools\Settings.cs" />
+    <Compile Include="DeckTools\Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Info.json">
+    <None Include="DeckTools\Info.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Todos.txt" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

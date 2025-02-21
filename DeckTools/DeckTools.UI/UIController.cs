@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 using GameManagement;
 using UnityEngine.UI;
 
-namespace DeckTools
+namespace DeckTools.UI
 {
     public class UItab // UI dropdown tabs class
     {
@@ -20,7 +20,7 @@ namespace DeckTools
         }
     }
 
-    public class UI : MonoBehaviour
+    public class UIController : MonoBehaviour
     {
         private Rect WindowBox = new Rect(20, 20, Screen.width / 8, 20);
         private bool showMainMenu = false;

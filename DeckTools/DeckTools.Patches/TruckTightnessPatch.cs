@@ -4,7 +4,7 @@ using UnityEngine;
 using GameManagement;
 using SkaterXL.Gameplay;
 
-namespace DeckTools
+namespace DeckTools.Patches
 {
     [HarmonyPatch(typeof(GameplayController), "Update")]
     internal static class TruckTightnessPatch

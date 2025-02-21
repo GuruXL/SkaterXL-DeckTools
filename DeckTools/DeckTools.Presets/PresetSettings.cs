@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace DeckTools
+namespace DeckTools.Presets
 {
     [Serializable]
     public class PresetSettings : MonoBehaviour
