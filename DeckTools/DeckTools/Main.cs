@@ -18,12 +18,9 @@ namespace DeckTools
         public static UnityModManager.ModEntry modEntry;
         public static Settings settings;
         public static GameObject ScriptManager;
-        public static GameObject PresetManager;
         public static DeckTools deckTools;
         public static UIController uiController;
-
-        public static PresetSettings presetSettings;
-        public static PresetController PresetCtrl;
+        public static PresetController presetController;
 
         public static bool Load(UnityModManager.ModEntry modEntry)
         {
@@ -69,13 +66,9 @@ namespace DeckTools
                     harmonyInstance.PatchAll(Assembly.GetExecutingAssembly());
 
                     ScriptManager = new GameObject("DeckTools");
-                    PresetManager = new GameObject("PresetManager");
-                    PresetManager.transform.SetParent(ScriptManager.transform);
-
                     deckTools = ScriptManager.AddComponent<DeckTools>();
                     uiController = ScriptManager.AddComponent<UIController>();
-                    presetSettings = PresetManager.AddComponent<PresetSettings>();
-                    PresetCtrl = PresetManager.AddComponent<PresetController>();
+                    presetController = ScriptManager.AddComponent<PresetController>();
 
                     Object.DontDestroyOnLoad(ScriptManager);
                 }

@@ -6,7 +6,7 @@ using UnityEngine;
 namespace DeckTools.Presets
 {
     [Serializable]
-    public class PresetSettings : MonoBehaviour
+    public class PresetSettings
     {
         [SerializeField]
         public float DeckLocalScale_x;

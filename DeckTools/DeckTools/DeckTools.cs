@@ -1,14 +1,6 @@
-﻿using HarmonyLib;
-using System.Threading.Tasks;
-using UnityEngine;
-using SkaterXL.Gameplay;
-using SkaterXL.Multiplayer;
-using SkaterXL.Data;
+﻿using UnityEngine;
 using ReplayEditor;
 using GameManagement;
-using Photon.Realtime;
-using Photon.Pun;
-using System.Collections.Generic;
 
 namespace DeckTools
 {
@@ -18,14 +10,13 @@ namespace DeckTools
         Transform DeckParent;
         Transform BackTruckHanger;
         Transform FrontTruckHanger;
-
-        //CapsuleCollider BackTruckCollider;
-        //CapsuleCollider FrontTruckCollider;
-
         Transform Wheel1;
         Transform Wheel2;
         Transform Wheel3;
         Transform Wheel4;
+
+        //CapsuleCollider BackTruckCollider;
+        //CapsuleCollider FrontTruckCollider;
 
         Vector3[] DefaultWheelPos = new Vector3[4];
         Vector3[] Default_Replay_WheelPos = new Vector3[4];
@@ -43,14 +34,6 @@ namespace DeckTools
         Transform Replay_Wheel3;
         Transform Replay_Wheel4;
 
-        Transform Multi_DeckParent;
-        Transform Multi_BackTruckHanger;
-        Transform Multi_FrontTruckHanger;
-        Transform Multi_Wheel1;
-        Transform Multi_Wheel2;
-        Transform Multi_Wheel3;
-        Transform Multi_Wheel4;
-
         private void Start()
         {
             GetDeck();
@@ -62,13 +45,6 @@ namespace DeckTools
             if (!Main.settings.enabled)
             {
                 return;
-            }
-            else if(MultiplayerManager.Instance.InRoom)
-            {
-                if (MultiDeckFound() == true)
-                {
-                    UpdateMultiSettings();
-                }
             }
             else
             {
@@ -89,20 +65,6 @@ namespace DeckTools
         }
         private void FixedUpdate()
         {
-            if (MultiplayerManager.Instance.InRoom)
-            {
-                if (MultiDeckFound() == false)
-                {
-                    GetMultiDeck();
-                }
-            }
-            else if (!MultiplayerManager.Instance.InRoom)
-            {
-                if (MultiDeckFound() == true)
-                {
-                    ResetMultiDeck();
-                }
-            }
         }
 
         private void GetDeck()
@@ -157,60 +119,6 @@ namespace DeckTools
             Default_Replay_WheelPos[3] = Replay_Wheel4.localPosition;
         }
 
-        private void GetMultiDeck()
-        {
-            foreach (KeyValuePair<int, NetworkPlayerController> player in MultiplayerManager.Instance.networkPlayers)
-            {
-                if (player.Value)
-                {
-                    if (player.Value.IsLocal)
-                    {
-                        /*
-                        Multi_DeckParent = player.Value.transformSyncer.livePlayback.customizer.DeckParent;
-                        Multi_BackTruckHanger = player.Value.transformSyncer.livePlayback.customizer.TruckHangerParents[0].parent;
-                        Multi_FrontTruckHanger = player.Value.transformSyncer.livePlayback.customizer.TruckHangerParents[1].parent;
-                        Multi_Wheel1 = player.Value.transformSyncer.livePlayback.customizer.WheelParents[0];
-                        Multi_Wheel2 = player.Value.transformSyncer.livePlayback.customizer.WheelParents[1];
-                        Multi_Wheel3 = player.Value.transformSyncer.livePlayback.customizer.WheelParents[2];
-                        Multi_Wheel4 = player.Value.transformSyncer.livePlayback.customizer.WheelParents[3];
-                        */
-                        //Multi_DeckParent = player.Value.transformSyncer.transformReference.boardTransform;
-                        
-                        Multi_DeckParent = player.Value.GetSkateboard().FindChildRecursively("Deck Mesh Parent");
-                        Multi_BackTruckHanger = player.Value.GetSkateboard().FindChildRecursively("Back Truck").Find("Hanger");
-                        Multi_FrontTruckHanger = player.Value.GetSkateboard().FindChildRecursively("Front Truck").Find("Hanger");
-                        Multi_Wheel1 = player.Value.GetSkateboard().FindChildRecursively("Wheel1");
-                        Multi_Wheel2 = player.Value.GetSkateboard().FindChildRecursively("Wheel2");
-                        Multi_Wheel3 = player.Value.GetSkateboard().FindChildRecursively("Wheel3");
-                        Multi_Wheel4 = player.Value.GetSkateboard().FindChildRecursively("Wheel4");                 
-                        
-                    }
-                }
-            }
-        }
-
-        private bool MultiDeckFound()
-        {
-            if (Multi_DeckParent != null && Multi_BackTruckHanger && Multi_FrontTruckHanger != null && Multi_Wheel1 != null && Multi_Wheel2 != null && Multi_Wheel3 != null && Multi_Wheel4 != null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        private void ResetMultiDeck()
-        {
-            Multi_DeckParent = null;
-            Multi_BackTruckHanger = null;
-            Multi_FrontTruckHanger = null;
-            Multi_Wheel1 = null;
-            Multi_Wheel2 = null;
-            Multi_Wheel3 = null;
-            Multi_Wheel4 = null;
-        }
         private void UpdateSettings()
         {
             // Scales Deck mesh
@@ -471,102 +379,6 @@ namespace DeckTools
             Replay_Wheel2.localPosition = newWheel2Pos;
             Replay_Wheel3.localPosition = newWheel3Pos;
             Replay_Wheel4.localPosition = newWheel4Pos;
-        }
-       
-        private void UpdateMultiSettings()
-        {
-
-            // Scales Replay Deck mesh
-            if (Multi_DeckParent != null)
-            {
-                Vector3 Multi_deckLocalScale = Multi_DeckParent.localScale;
-                Vector3 settingsDeckLocalScale = new Vector3(Main.settings.DeckLocalScale_x, Main.settings.DeckLocalScale_y, Main.settings.DeckLocalScale_z);
-                if (Multi_deckLocalScale != settingsDeckLocalScale)
-                {
-                    Multi_DeckParent.localScale = settingsDeckLocalScale;
-                }
-            }
-
-            // Scales  Replay Trucks on the X axis
-            if (Multi_BackTruckHanger != null)
-            {
-                Vector3 Multi_backTruckLocalScale = Multi_BackTruckHanger.localScale;
-                Vector3 settingsBackTruckLocalScale = new Vector3(Main.settings.BackTruckLocalScale_x, Multi_backTruckLocalScale.y, Multi_backTruckLocalScale.z);
-                if (Multi_backTruckLocalScale.x != Main.settings.BackTruckLocalScale_x)
-                {
-                    Multi_BackTruckHanger.localScale = settingsBackTruckLocalScale;
-                }
-            }
-            if (Multi_FrontTruckHanger != null)
-            {
-                Vector3 Multi_frontTruckLocalScale = Multi_FrontTruckHanger.localScale;
-                Vector3 settingsFrontTruckLocalScale = new Vector3(Main.settings.FrontTruckLocalScale_x, Multi_frontTruckLocalScale.y, Multi_frontTruckLocalScale.z);
-                if (Multi_frontTruckLocalScale.x != Main.settings.FrontTruckLocalScale_x)
-                {
-                    Multi_FrontTruckHanger.localScale = settingsFrontTruckLocalScale;
-                }
-            }
-
-            // scales Replay Wheels
-            if (Multi_Wheel1 != null)
-            {
-                Vector3 Multi_wheel1LocalScale = Multi_Wheel1.localScale;
-                Vector3 settingsWheel1LocalScale = new Vector3(Main.settings.Wheel1LocalScale_x, Multi_wheel1LocalScale.y, Multi_wheel1LocalScale.z);
-                if (Multi_wheel1LocalScale != settingsWheel1LocalScale)
-                {
-                    Multi_Wheel1.localScale = settingsWheel1LocalScale;
-                }
-
-                float wheel1Radius = Main.settings.Wheel1Radius;
-                if (Multi_wheel1LocalScale.y != wheel1Radius || Multi_wheel1LocalScale.z != wheel1Radius)
-                {
-                    Multi_Wheel1.localScale = new Vector3(Multi_wheel1LocalScale.x, wheel1Radius, wheel1Radius);
-                }
-            }
-            if (Multi_Wheel2 != null)
-            {
-                Vector3 Multi_wheel2LocalScale = Multi_Wheel2.localScale;
-                Vector3 settingsWheel2LocalScale = new Vector3(Main.settings.Wheel2LocalScale_x, Multi_wheel2LocalScale.y, Multi_wheel2LocalScale.z);
-                if (Multi_wheel2LocalScale != settingsWheel2LocalScale)
-                {
-                    Multi_Wheel2.localScale = settingsWheel2LocalScale;
-                }
-
-                float wheel2Radius = Main.settings.Wheel2Radius;
-                if (Multi_wheel2LocalScale.y != wheel2Radius || Multi_wheel2LocalScale.z != wheel2Radius)
-                {
-                    Multi_Wheel2.localScale = new Vector3(Multi_wheel2LocalScale.x, wheel2Radius, wheel2Radius);
-                }
-            }
-            if (Multi_Wheel3 != null)
-            {
-                Vector3 Multi_wheel3LocalScale = Multi_Wheel3.localScale;
-                Vector3 settingsWheel3LocalScale = new Vector3(Main.settings.Wheel3LocalScale_x, Multi_wheel3LocalScale.y, Multi_wheel3LocalScale.z);
-                if (Multi_wheel3LocalScale != settingsWheel3LocalScale)
-                {
-                    Multi_Wheel3.localScale = settingsWheel3LocalScale;
-                }
-                float wheel3Radius = Main.settings.Wheel3Radius;
-                if (Multi_wheel3LocalScale.y != wheel3Radius || Multi_wheel3LocalScale.z != wheel3Radius)
-                {
-                    Multi_Wheel3.localScale = new Vector3(Multi_wheel3LocalScale.x, wheel3Radius, wheel3Radius);
-                }
-            }
-            if (Multi_Wheel4 != null)
-            {
-                Vector3 Multi_wheel4LocalScale = Multi_Wheel4.localScale;
-                Vector3 settingsWheel4LocalScale = new Vector3(Main.settings.Wheel4LocalScale_x, Multi_wheel4LocalScale.y, Multi_wheel4LocalScale.z);
-                if (Multi_wheel4LocalScale != settingsWheel4LocalScale)
-                {
-                    Multi_Wheel4.localScale = settingsWheel4LocalScale;
-                }
-
-                float wheel4Radius = Main.settings.Wheel4Radius;
-                if (Multi_wheel4LocalScale.y != wheel4Radius || Multi_wheel4LocalScale.z != wheel4Radius)
-                {
-                    Multi_Wheel4.localScale = new Vector3(Multi_wheel4LocalScale.x, wheel4Radius, wheel4Radius);
-                }
-            }
         }
     }
 }

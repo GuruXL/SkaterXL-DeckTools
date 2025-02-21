@@ -9,14 +9,13 @@ namespace DeckTools
     [Serializable]
     public class Settings : UnityModManager.ModSettings, IDrawable
     {
-        public static Settings Instance { get; set; }
 
         // ----- Start Set KeyBindings ------
         public KeyBinding Hotkey = new KeyBinding { keyCode = KeyCode.D };
 
         private static readonly KeyCode[] keyCodes = Enum.GetValues(typeof(KeyCode))
             .Cast<KeyCode>()
-            .Where(k => ((int)k < (int)KeyCode.Mouse0))
+            .Where(k => (int)k < (int)KeyCode.Mouse0)
             .ToArray();
 
         // Get Key on KeyPress

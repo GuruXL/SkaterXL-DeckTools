@@ -28,12 +28,8 @@ namespace DeckTools.UI
         private UItab Settings_Tab = new UItab(true, "Settings", 14);
         private UItab Presets_Tab = new UItab(true, "Presets", 14);
 
-        //private string white = "#e6ebe8";
         private string Grey = "#adadad";
         private string LightBlue = "#30e2e6";
-        //private string DarkBlue = "#3347ff";
-        //private string green = "#7CFC00";
-        //private string red = "#b71540";
         private string TabColor;
 
         private void Update()
@@ -103,13 +99,6 @@ namespace DeckTools.UI
                 Main.settings.enabled = !Main.settings.enabled;
             }
             GUILayout.EndHorizontal();
-
-            // Resets Toggles
-            if (!Main.settings.enabled)
-            {
-
-            }
-
         }
         private void Tabs(UItab obj, string color = "#e6ebe8")
         {
@@ -176,10 +165,10 @@ namespace DeckTools.UI
                 GUI.backgroundColor = Color.cyan;
                 if (GUILayout.Button("Save Preset", RGUIStyle.button, GUILayout.Width(98)))
                 {
-                    Main.PresetCtrl.SavePreset();
+                    Main.presetController.SavePreset();
                 }
                 GUI.backgroundColor = Color.cyan;
-                Main.PresetCtrl.PresetName = RGUI.Field(Main.PresetCtrl.PresetName, "");
+                Main.presetController.presetName = RGUI.Field(Main.presetController.presetName, "");
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
 
@@ -187,10 +176,10 @@ namespace DeckTools.UI
                 GUI.backgroundColor = Color.red;
                 if (GUILayout.Button("Apply Preset", RGUIStyle.button, GUILayout.Width(98)))
                 {
-                    Main.PresetCtrl.ApplyPreset();
-                    Main.PresetCtrl.ResetPresetList();
+                    Main.presetController.ApplyPreset();
+                    Main.presetController.ResetPresetList();
                 }
-                Main.PresetCtrl.PresetToLoad = RGUI.SelectionPopup(Main.PresetCtrl.PresetToLoad, Main.PresetCtrl.GetPresetNames());
+                Main.presetController.presetToLoad = RGUI.SelectionPopup(Main.presetController.presetToLoad, Main.presetController.GetPresetNames());
                 GUILayout.EndHorizontal();
             }
         }         
